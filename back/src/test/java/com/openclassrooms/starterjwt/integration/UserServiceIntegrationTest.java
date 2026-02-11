@@ -34,11 +34,9 @@ public class UserServiceIntegrationTest {
 
     @Test
     public void testDeleteUser() {
-        // This test creates a user scenario but we won't actually delete existing users
+
         User user = userService.findById(1L);
         assertThat(user).isNotNull();
-
-        // Test deletion (will rollback due to @Transactional)
         userService.delete(1L);
 
         User deletedUser = userService.findById(1L);

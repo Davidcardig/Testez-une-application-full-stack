@@ -100,86 +100,85 @@
                     </excludes>
                 </configuration>
             </plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.11</version>
-				<executions>
-					<!-- Prépare l'agent JaCoCo pour la collecte des données de couverture -->
-					<execution>
-						<id>prepare-agent</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.11</version>
 
-					<!-- Génère le rapport de couverture après les tests -->
-					<execution>
-						<id>report</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-						<configuration>
-							<!-- Exclusion des DTOs du rapport de couverture -->
-							<excludes>
-								<exclude>com/openclassrooms/starterjwt/dto/**</exclude>
-							</excludes>
-							<formats>
-								<format>XML</format>
-								<format>HTML</format>
-								<format>CSV</format>
-							</formats>
-						</configuration>
-					</execution>
+                <!-- Appliqué à toutes les executions -->
+                <configuration>
+                    <excludes>
+                        <exclude>com/openclassrooms/starterjwt/dto/**</exclude>
+                    </excludes>
+                </configuration>
 
-					<!-- Vérifie les seuils de couverture minimale -->
-					<execution>
-						<id>jacoco-check</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-						<configuration>
-							<!-- Exclusion des DTOs de la vérification de couverture -->
-							<excludes>
-								<exclude>com/openclassrooms/starterjwt/dto/**</exclude>
-							</excludes>
-							<rules>
-								<rule>
-									<element>BUNDLE</element>
-									<limits>
-										<!-- Couverture de lignes minimale : 80% -->
-										<limit>
-											<counter>LINE</counter>
-											<value>COVEREDRATIO</value>
-											<minimum>0.80</minimum>
-										</limit>
-										<!-- Couverture de branches minimale : 70% -->
-										<limit>
-											<counter>BRANCH</counter>
-											<value>COVEREDRATIO</value>
-											<minimum>0.70</minimum>
-										</limit>
-									</limits>
-								</rule>
-								<rule>
-									<element>CLASS</element>
-									<limits>
-										<!-- Couverture de lignes par classe : 70% -->
-										<limit>
-											<counter>LINE</counter>
-											<value>COVEREDRATIO</value>
-											<minimum>0.9</minimum>
-										</limit>
-									</limits>
-								</rule>
-							</rules>
-						</configuration>
-					</execution>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
 
-				</executions>
-			</plugin>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <formats>
+                                <format>XML</format>
+                                <format>HTML</format>
+                                <format>CSV</format>
+                            </formats>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>jacoco-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+
+                                <rule>
+                                    <element>CLASS</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.9</minimum>
+                                        </limit>
+                                    </limits>
+                                    <!-- IMPORTANT : sinon tes DTO peuvent encore être pris en compte au niveau CLASS -->
+                                    <excludes>
+                                        <exclude>com.openclassrooms.starterjwt.dto.*</exclude>
+                                        <exclude>com.openclassrooms.starterjwt.dto.**</exclude>
+                                    </excludes>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 
