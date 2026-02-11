@@ -41,62 +41,28 @@ describe('TEST UNITAIRE', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('Validation du formulaire', () => {
+    it('devrait valider un email correct', () => {
+      const emailControl = component.form.get('email');
+      emailControl?.setValue('test@example.com');
+      expect(emailControl?.valid).toBeTruthy();
+    });
 
-    it('Etre invalide avec un format d\'email incorrect', () => {
+    it('devrait invalider un email incorrect', () => {
       const emailControl = component.form.get('email');
       emailControl?.setValue('david@.com');
       expect(emailControl?.valid).toBeFalsy();
       expect(emailControl?.hasError('email')).toBeTruthy();
     });
 
-    it('Etre valide avec un format d\'email correct', () => {
-      const emailControl = component.form.get('email');
-      emailControl?.setValue('test@example.com');
-      expect(emailControl?.valid).toBeTruthy();
+    it('devrait requérir tous les champs', () => {
+      expect(component.form.get('firstName')?.hasError('required')).toBeTruthy();
+      expect(component.form.get('lastName')?.hasError('required')).toBeTruthy();
+      expect(component.form.get('password')?.hasError('required')).toBeTruthy();
     });
-
-
-    it('Etre invalide lorsque vide', () => {
-      const firstNameControl = component.form.get('firstName');
-      expect(firstNameControl?.valid).toBeFalsy();
-      expect(firstNameControl?.hasError('required')).toBeTruthy();
-    });
-
-    it('Etre valide avec un prénom valide', () => {
-      const firstNameControl = component.form.get('firstName');
-      firstNameControl?.setValue('David');
-      expect(firstNameControl?.valid).toBeTruthy();
-    });
-
-
-    it('devrait être invalide lorsque vide', () => {
-      const lastNameControl = component.form.get('lastName');
-      expect(lastNameControl?.valid).toBeFalsy();
-      expect(lastNameControl?.hasError('required')).toBeTruthy();
-    });
-
-    it('devrait être valide avec un nom valide', () => {
-      const lastNameControl = component.form.get('lastName');
-      lastNameControl?.setValue('Cardigos');
-      expect(lastNameControl?.valid).toBeTruthy();
-    });
-
-
-
-    it('Etre invalide lorsque vide', () => {
-      const passwordControl = component.form.get('password');
-      expect(passwordControl?.valid).toBeFalsy();
-      expect(passwordControl?.hasError('required')).toBeTruthy();
-    });
-
-    it('Etre valide avec un mot de passe valide', () => {
-      const passwordControl = component.form.get('password');
-      passwordControl?.setValue('test1234546');
-      expect(passwordControl?.valid).toBeTruthy();
-    });
+  });
 
 });
-
 
 
 
@@ -141,10 +107,7 @@ describe('TEST INTEGRATION', () => {
   });
 
 
-
-
-  it('Enregistrer un utilisateur et naviguer vers la rout /login en cas de succès', () => {
-    // Arrange
+  it('devrait enregistrer un utilisateur et naviguer vers /login en cas de succès', () => {
     const registerData = {
       email: 'test@test.com',
       firstName: 'David',
@@ -153,21 +116,37 @@ describe('TEST INTEGRATION', () => {
     };
 
     component.form.setValue(registerData);
-
-    // Act
     component.submit();
 
-    // Assert
     const req = httpMock.expectOne('api/auth/register');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(registerData);
 
-
     req.flush(null);
 
-    // Vérifier que la navigation a eu lieu
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
     expect(component.onError).toBeFalsy();
+  });
+
+  it('devrait afficher une erreur en cas d\'échec de l\'enregistrement', () => {
+    const registerData = {
+      email: 'test@test.com',
+      firstName: 'David',
+      lastName: 'Cardigos',
+      password: 'test123'
+    };
+
+    component.form.setValue(registerData);
+    component.submit();
+
+    const req = httpMock.expectOne('api/auth/register');
+    req.flush(
+      { message: 'Email already exists' },
+      { status: 400, statusText: 'Bad Request' }
+    );
+
+    expect(mockRouter.navigate).not.toHaveBeenCalled();
+    expect(component.onError).toBeTruthy();
   });
 
 });

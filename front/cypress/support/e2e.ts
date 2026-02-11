@@ -1,5 +1,5 @@
 // ***********************************************************
-// This example support/index.js is processed and
+// This example support/e2e.ts is processed and
 // loaded automatically before your test files.
 //
 // This is a great place to put global configuration and
@@ -13,7 +13,37 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// When a command from ./commands is ready to use, import with `import './commands'` syntax
-// import './commands';
+// Import commands.js using ES2015 syntax:
+import './commands';
 
+// Import code coverage support
 import '@cypress/code-coverage/support';
+
+// Supprimer les erreurs Chromium non critiques de la console
+Cypress.on('uncaught:exception', (err) => {
+  // Ignorer les erreurs display_layout de Chromium
+  if (err.message.includes('display_layout')) {
+    return false;
+  }
+  // Laisser passer les autres erreurs
+  return true;
+});
+
+// Supprimer les warnings de la console du navigateur
+Cypress.on('window:before:load', (win) => {
+  const originalError = win.console.error;
+  win.console.error = function (...args) {
+    const errorMessage = args.join(' ');
+    // Filtrer les erreurs Chromium non critiques
+    if (
+      errorMessage.includes('display_layout') ||
+      errorMessage.includes('PlacementList must be sorted')
+    ) {
+      return;
+    }
+    originalError.apply(win.console, args);
+  };
+});
+
+// Alternatively you can use CommonJS syntax:
+// require('./commands')
