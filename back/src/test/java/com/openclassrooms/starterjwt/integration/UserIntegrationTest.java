@@ -47,13 +47,6 @@ public class UserIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
-//    @Test
-//    @WithMockUser(username = "david@test.com", authorities = {"ADMIN"})
-//    public void testDeleteUserSuccess() throws Exception {
-//        mockMvc.perform(delete("/api/user/1"))
-//                .andExpect(status().isOk());
-//    }
-
     @Test
     @WithMockUser
     public void testDeleteUserNotFound() throws Exception {

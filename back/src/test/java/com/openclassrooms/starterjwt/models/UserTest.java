@@ -257,4 +257,130 @@ class UserTest {
         assertThat(user.getCreatedAt()).isNull();
         assertThat(user.getUpdatedAt()).isNull();
     }
+
+    @Test
+    @DisplayName("Devrait comparer correctement les hashCodes")
+    void testUserHashCode() {
+        // Given
+        User user1 = User.builder()
+                .id(1L)
+                .email("test@example.com")
+                .firstName("John")
+                .lastName("Doe")
+                .password("password123")
+                .admin(false)
+                .build();
+        User user2 = User.builder()
+                .id(1L)
+                .email("test@example.com")
+                .firstName("John")
+                .lastName("Doe")
+                .password("password123")
+                .admin(false)
+                .build();
+        User user3 = User.builder()
+                .id(2L)
+                .email("test@example.com")
+                .firstName("John")
+                .lastName("Doe")
+                .password("password123")
+                .admin(false)
+                .build();
+
+        // Then
+        assertThat(user1.hashCode()).isEqualTo(user2.hashCode());
+        assertThat(user1.hashCode()).isNotEqualTo(user3.hashCode());
+    }
+
+    @Test
+    @DisplayName("Devrait gérer l'égalité avec null et même instance")
+    void testUserEqualsEdgeCases() {
+        // Given
+        User user = User.builder()
+                .id(1L)
+                .email("test@example.com")
+                .firstName("John")
+                .lastName("Doe")
+                .password("password123")
+                .admin(false)
+                .build();
+
+        // Then
+        assertThat(user.equals(user)).isTrue();
+        assertThat(user.equals(null)).isFalse();
+        assertThat(user.equals(new Object())).isFalse();
+    }
+
+    @Test
+    @DisplayName("Devrait permettre de modifier l'email")
+    void testUserEmailModification() {
+        // Given
+        User user = User.builder()
+                .email("old@example.com")
+                .firstName("John")
+                .lastName("Doe")
+                .password("password123")
+                .admin(false)
+                .build();
+
+        // When
+        user.setEmail("new@example.com");
+
+        // Then
+        assertThat(user.getEmail()).isEqualTo("new@example.com");
+    }
+
+    @Test
+    @DisplayName("Devrait permettre de modifier le statut admin")
+    void testUserAdminStatusModification() {
+        // Given
+        User user = User.builder()
+                .email("user@example.com")
+                .firstName("John")
+                .lastName("Doe")
+                .password("password123")
+                .admin(false)
+                .build();
+
+        // When
+        user.setAdmin(true);
+
+        // Then
+        assertThat(user.isAdmin()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Devrait permettre de modifier le mot de passe")
+    void testUserPasswordModification() {
+        // Given
+        User user = User.builder()
+                .email("user@example.com")
+                .firstName("John")
+                .lastName("Doe")
+                .password("oldPassword")
+                .admin(false)
+                .build();
+
+        // When
+        user.setPassword("newPassword");
+
+        // Then
+        assertThat(user.getPassword()).isEqualTo("newPassword");
+    }
+
+    @Test
+    @DisplayName("Devrait gérer correctement les timestamps")
+    void testUserTimestamps() {
+        // Given
+        LocalDateTime before = LocalDateTime.now();
+        User user = new User();
+
+        // When
+        user.setCreatedAt(before);
+        user.setUpdatedAt(before);
+
+        // Then
+        assertThat(user.getCreatedAt()).isEqualTo(before);
+        assertThat(user.getUpdatedAt()).isEqualTo(before);
+    }
 }

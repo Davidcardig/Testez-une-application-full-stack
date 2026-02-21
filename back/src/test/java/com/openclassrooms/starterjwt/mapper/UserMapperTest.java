@@ -183,4 +183,52 @@ class UserMapperTest {
         assertThat(userDto).isNotNull();
         assertThat(userDto.isAdmin()).isTrue();
     }
+
+    @Test
+    @DisplayName("Devrait convertir une liste vide de Users en liste vide de UserDtos")
+    void testToDtoList_EmptyList() {
+        // Given
+        List<User> users = Arrays.asList();
+
+        // When
+        List<UserDto> userDtos = userMapper.toDto(users);
+
+        // Then
+        assertThat(userDtos).isNotNull();
+        assertThat(userDtos).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Devrait convertir une liste vide de UserDtos en liste vide de Users")
+    void testToEntityList_EmptyList() {
+        // Given
+        List<UserDto> userDtos = Arrays.asList();
+
+        // When
+        List<User> users = userMapper.toEntity(userDtos);
+
+        // Then
+        assertThat(users).isNotNull();
+        assertThat(users).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Devrait retourner null pour une liste nulle de Users")
+    void testToDtoList_NullList() {
+        // When
+        List<UserDto> userDtos = userMapper.toDto((List<User>) null);
+
+        // Then
+        assertThat(userDtos).isNull();
+    }
+
+    @Test
+    @DisplayName("Devrait retourner null pour une liste nulle de UserDtos")
+    void testToEntityList_NullList() {
+        // When
+        List<User> users = userMapper.toEntity((List<UserDto>) null);
+
+        // Then
+        assertThat(users).isNull();
+    }
 }

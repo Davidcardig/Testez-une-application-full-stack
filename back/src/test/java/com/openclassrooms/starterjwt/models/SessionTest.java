@@ -261,4 +261,166 @@ class SessionTest {
         assertThat(session.getTeacher()).isNull();
         assertThat(session.getUsers()).isNull();
     }
+
+    @Test
+    @DisplayName("Devrait comparer correctement les hashCodes")
+    void testSessionHashCode() {
+        // Given
+        Session session1 = Session.builder().id(1L).build();
+        Session session2 = Session.builder().id(1L).build();
+        Session session3 = Session.builder().id(2L).build();
+
+        // Then
+        assertThat(session1.hashCode()).isEqualTo(session2.hashCode());
+        assertThat(session1.hashCode()).isNotEqualTo(session3.hashCode());
+    }
+
+    @Test
+    @DisplayName("Devrait gérer l'égalité avec null et même instance")
+    void testSessionEqualsEdgeCases() {
+        // Given
+        Session session = Session.builder()
+                .id(1L)
+                .name("Yoga Session")
+                .description("Test session")
+                .build();
+
+        // Then
+        assertThat(session.equals(session)).isTrue();
+        assertThat(session.equals(null)).isFalse();
+        assertThat(session.equals(new Object())).isFalse();
+    }
+
+    @Test
+    @DisplayName("Devrait permettre de modifier le nom")
+    void testSessionNameModification() {
+        // Given
+        Session session = Session.builder()
+                .name("Yoga Session")
+                .description("Test")
+                .build();
+
+        // When
+        session.setName("Meditation Session");
+
+        // Then
+        assertThat(session.getName()).isEqualTo("Meditation Session");
+    }
+
+    @Test
+    @DisplayName("Devrait permettre de modifier la description")
+    void testSessionDescriptionModification() {
+        // Given
+        Session session = Session.builder()
+                .name("Yoga Session")
+                .description("Old description")
+                .build();
+
+        // When
+        session.setDescription("New description");
+
+        // Then
+        assertThat(session.getDescription()).isEqualTo("New description");
+    }
+
+    @Test
+    @DisplayName("Devrait permettre de modifier la date")
+    void testSessionDateModification() {
+        // Given
+        Date oldDate = new Date();
+        Date newDate = new Date(System.currentTimeMillis() + 86400000);
+        Session session = Session.builder()
+                .name("Yoga Session")
+                .date(oldDate)
+                .build();
+
+        // When
+        session.setDate(newDate);
+
+        // Then
+        assertThat(session.getDate()).isEqualTo(newDate);
+    }
+
+    @Test
+    @DisplayName("Devrait permettre de modifier le professeur")
+    void testSessionTeacherModification() {
+        // Given
+        Teacher oldTeacher = Teacher.builder().id(1L).firstName("John").lastName("Doe").build();
+        Teacher newTeacher = Teacher.builder().id(2L).firstName("Jane").lastName("Smith").build();
+        Session session = Session.builder()
+                .name("Yoga Session")
+                .teacher(oldTeacher)
+                .build();
+
+        // When
+        session.setTeacher(newTeacher);
+
+        // Then
+        assertThat(session.getTeacher()).isEqualTo(newTeacher);
+        assertThat(session.getTeacher().getId()).isEqualTo(2L);
+    }
+
+    @Test
+    @DisplayName("Devrait gérer une session sans utilisateurs")
+    void testSessionWithoutUsers() {
+        // Given
+        Session session = Session.builder()
+                .name("Yoga Session")
+                .description("Test")
+                .build();
+
+        // Then
+        assertThat(session.getUsers()).isNull();
+    }
+
+    @Test
+    @DisplayName("Devrait gérer une session avec une liste vide d'utilisateurs")
+    void testSessionWithEmptyUsersList() {
+        // Given
+        Session session = Session.builder()
+                .name("Yoga Session")
+                .users(new ArrayList<>())
+                .build();
+
+        // Then
+        assertThat(session.getUsers()).isNotNull();
+        assertThat(session.getUsers()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Devrait gérer correctement les timestamps")
+    void testSessionTimestamps() {
+        // Given
+        LocalDateTime before = LocalDateTime.now();
+        Session session = new Session();
+
+        // When
+        session.setCreatedAt(before);
+        session.setUpdatedAt(before);
+
+        // Then
+        assertThat(session.getCreatedAt()).isEqualTo(before);
+        assertThat(session.getUpdatedAt()).isEqualTo(before);
+    }
+
+    @Test
+    @DisplayName("Devrait permettre d'ajouter plusieurs utilisateurs")
+    void testSessionAddMultipleUsers() {
+        // Given
+        Session session = Session.builder()
+                .name("Yoga Session")
+                .users(new ArrayList<>())
+                .build();
+
+        User user1 = User.builder().id(1L).email("user1@test.com").firstName("John").lastName("Doe").password("pass1").admin(false).build();
+        User user2 = User.builder().id(2L).email("user2@test.com").firstName("Jane").lastName("Smith").password("pass2").admin(false).build();
+
+        // When
+        session.getUsers().add(user1);
+        session.getUsers().add(user2);
+
+        // Then
+        assertThat(session.getUsers()).hasSize(2);
+        assertThat(session.getUsers()).containsExactly(user1, user2);
+    }
 }

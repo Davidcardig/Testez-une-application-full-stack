@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassrooms.starterjwt.dto.SessionDto;
 import com.openclassrooms.starterjwt.models.Session;
 import com.openclassrooms.starterjwt.models.Teacher;
+import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.repository.SessionRepository;
 import com.openclassrooms.starterjwt.repository.TeacherRepository;
+import com.openclassrooms.starterjwt.repository.UserRepository;
+import com.openclassrooms.starterjwt.mapper.SessionMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +20,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -39,6 +46,12 @@ public class SessionIntegrationTest {
 
     @Autowired
     private TeacherRepository teacherRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private SessionMapper sessionMapper;
 
     private Teacher teacher;
 
@@ -72,17 +85,19 @@ public class SessionIntegrationTest {
     @Test
     @WithMockUser
     public void testCreateSession() throws Exception {
+        //given
         SessionDto sessionDto = new SessionDto();
         sessionDto.setName("New Yoga Session");
         sessionDto.setDescription("A relaxing session");
         sessionDto.setDate(new Date());
         sessionDto.setTeacher_id(1L);
 
-        mockMvc.perform(post("/api/session")
+        //when
+       var when = mockMvc.perform(post("/api/session")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(sessionDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("New Yoga Session"));
+               .content(objectMapper.writeValueAsString(sessionDto))) ;
+       //then
+       when.andExpect(status().isOk()).andExpect(jsonPath("$.name").value("New Yoga Session"));
     }
 
     @Test

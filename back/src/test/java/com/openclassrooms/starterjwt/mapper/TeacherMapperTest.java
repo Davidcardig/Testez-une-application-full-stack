@@ -145,4 +145,52 @@ class TeacherMapperTest {
         // Then
         assertThat(teacher).isNull();
     }
+
+    @Test
+    @DisplayName("Devrait convertir une liste vide de Teachers en liste vide de TeacherDtos")
+    void testToDtoList_EmptyList() {
+        // Given
+        List<Teacher> teachers = Arrays.asList();
+
+        // When
+        List<TeacherDto> teacherDtos = teacherMapper.toDto(teachers);
+
+        // Then
+        assertThat(teacherDtos).isNotNull();
+        assertThat(teacherDtos).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Devrait convertir une liste vide de TeacherDtos en liste vide de Teachers")
+    void testToEntityList_EmptyList() {
+        // Given
+        List<TeacherDto> teacherDtos = Arrays.asList();
+
+        // When
+        List<Teacher> teachers = teacherMapper.toEntity(teacherDtos);
+
+        // Then
+        assertThat(teachers).isNotNull();
+        assertThat(teachers).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Devrait retourner null pour une liste nulle de Teachers")
+    void testToDtoList_NullList() {
+        // When
+        List<TeacherDto> teacherDtos = teacherMapper.toDto((List<Teacher>) null);
+
+        // Then
+        assertThat(teacherDtos).isNull();
+    }
+
+    @Test
+    @DisplayName("Devrait retourner null pour une liste nulle de TeacherDtos")
+    void testToEntityList_NullList() {
+        // When
+        List<Teacher> teachers = teacherMapper.toEntity((List<TeacherDto>) null);
+
+        // Then
+        assertThat(teachers).isNull();
+    }
 }

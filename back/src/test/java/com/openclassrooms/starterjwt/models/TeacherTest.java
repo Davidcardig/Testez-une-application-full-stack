@@ -166,4 +166,77 @@ class TeacherTest {
         assertThat(teacher.getCreatedAt()).isNull();
         assertThat(teacher.getUpdatedAt()).isNull();
     }
+
+    @Test
+    @DisplayName("Devrait comparer correctement les hashCodes")
+    void testTeacherHashCode() {
+        // Given
+        Teacher teacher1 = Teacher.builder().id(1L).build();
+        Teacher teacher2 = Teacher.builder().id(1L).build();
+        Teacher teacher3 = Teacher.builder().id(2L).build();
+
+        // Then
+        assertThat(teacher1.hashCode()).isEqualTo(teacher2.hashCode());
+        assertThat(teacher1.hashCode()).isNotEqualTo(teacher3.hashCode());
+    }
+
+    @Test
+    @DisplayName("Devrait gérer l'égalité avec null et même instance")
+    void testTeacherEqualsEdgeCases() {
+        // Given
+        Teacher teacher = Teacher.builder().id(1L).firstName("John").lastName("Doe").build();
+
+        // Then
+        assertThat(teacher.equals(teacher)).isTrue();
+        assertThat(teacher.equals(null)).isFalse();
+        assertThat(teacher.equals(new Object())).isFalse();
+    }
+
+    @Test
+    @DisplayName("Devrait permettre de modifier le prénom")
+    void testTeacherFirstNameModification() {
+        // Given
+        Teacher teacher = Teacher.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .build();
+
+        // When
+        teacher.setFirstName("Jane");
+
+        // Then
+        assertThat(teacher.getFirstName()).isEqualTo("Jane");
+    }
+
+    @Test
+    @DisplayName("Devrait permettre de modifier le nom de famille")
+    void testTeacherLastNameModification() {
+        // Given
+        Teacher teacher = Teacher.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .build();
+
+        // When
+        teacher.setLastName("Smith");
+
+        // Then
+        assertThat(teacher.getLastName()).isEqualTo("Smith");
+    }
+
+    @Test
+    @DisplayName("Devrait gérer correctement les timestamps")
+    void testTeacherTimestamps() {
+        // Given
+        LocalDateTime before = LocalDateTime.now();
+        Teacher teacher = new Teacher();
+
+        // When
+        teacher.setCreatedAt(before);
+        teacher.setUpdatedAt(before);
+
+        // Then
+        assertThat(teacher.getCreatedAt()).isEqualTo(before);
+        assertThat(teacher.getUpdatedAt()).isEqualTo(before);
+    }
 }
