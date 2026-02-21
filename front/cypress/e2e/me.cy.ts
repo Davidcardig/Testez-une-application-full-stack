@@ -175,6 +175,4 @@ describe('Me (Account) E2E', () => {
       // Test de déconnexion depuis n'importe quelle page
       cy.contains('Logout').click();
       cy.url().should('eq', 'http://localhost:4200/');
-    });
-  });
 });

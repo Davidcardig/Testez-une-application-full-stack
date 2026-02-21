@@ -270,4 +270,3 @@ describe('Sessions Detail E2E', () => {
       cy.contains('button', 'Participate').should('be.visible');
     });
   });
-});

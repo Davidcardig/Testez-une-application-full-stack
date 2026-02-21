@@ -107,5 +107,4 @@ describe('Sessions Form E2E', () => {
     cy.get('mat-option').contains('Marie Dupont').should('be.visible');
     cy.get('mat-option').contains('Paul Martin').should('be.visible');
   });
-});
 

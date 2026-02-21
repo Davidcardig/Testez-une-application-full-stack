@@ -38,4 +38,3 @@ describe('Not Found E2E', () => {
     cy.visit('/une-route-inexistante');
     cy.url().should('include', '/404');
   });
-});

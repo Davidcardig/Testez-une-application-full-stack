@@ -1,3 +1,13 @@
+    cy.get('input[formControlName="password"]').type('pass123');
+    // Tester lastName requis
+    // Réinitialiser
+    cy.get('input[formControlName="email"]').clear();
+    cy.get('input[formControlName="lastName"]').type('Doe');
+    cy.get('input[formControlName="password"]').type('pass123');
+    cy.get('input[formControlName="lastName"]').clear();
+    cy.get('input[formControlName="password"]').clear();
+
+    // Tester firstName requis
 describe('Register E2E', () => {
   beforeEach(() => {
     cy.visit('/register');

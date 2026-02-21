@@ -116,7 +116,6 @@ describe('Sessions List E2E', () => {
   it('Sessions List - devrait afficher "Rentals available"', () => {
     cy.contains('Rentals available').should('be.visible');
   });
-});
 
 describe('Sessions List E2E - Non Admin', () => {
   beforeEach(() => {
