@@ -36,9 +36,12 @@ public class TeacherIntegrationTest {
     public void testGetTeacherById() throws Exception {
         mockMvc.perform(get("/api/teacher/1"))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.firstName").exists())
-                .andExpect(jsonPath("$.lastName").exists());
+                .andExpect(jsonPath("$.lastName").exists())
+                .andExpect(jsonPath("$.createdAt").exists())
+                .andExpect(jsonPath("$.updatedAt").exists());
     }
 
     @Test

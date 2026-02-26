@@ -20,10 +20,18 @@ public class UserServiceIntegrationTest {
 
     @Test
     public void testFindUserById() {
+        // When
         User user = userService.findById(1L);
+
+        // Then
         assertThat(user).isNotNull();
         assertThat(user.getId()).isEqualTo(1L);
         assertThat(user.getEmail()).isNotNull();
+        assertThat(user.getFirstName()).isNotNull();
+        assertThat(user.getLastName()).isNotNull();
+        assertThat(user.getPassword()).isNotNull();
+        assertThat(user.getCreatedAt()).isNotNull();
+        assertThat(user.getUpdatedAt()).isNotNull();
     }
 
     @Test
@@ -34,11 +42,15 @@ public class UserServiceIntegrationTest {
 
     @Test
     public void testDeleteUser() {
-
+        // Préparation - Vérifier que l'utilisateur existe
         User user = userService.findById(1L);
         assertThat(user).isNotNull();
+        assertThat(user.getId()).isEqualTo(1L);
+
+        // Exécution - Supprimer l'utilisateur
         userService.delete(1L);
 
+        // Vérification - Vérifier que l'utilisateur est supprimé
         User deletedUser = userService.findById(1L);
         assertThat(deletedUser).isNull();
     }

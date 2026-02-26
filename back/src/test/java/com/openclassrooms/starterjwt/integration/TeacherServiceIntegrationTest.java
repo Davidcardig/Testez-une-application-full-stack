@@ -29,11 +29,16 @@ public class TeacherServiceIntegrationTest {
 
     @Test
     public void testFindTeacherById() {
+        // When
         Teacher teacher = teacherService.findById(1L);
+
+        // Then
         assertThat(teacher).isNotNull();
         assertThat(teacher.getId()).isEqualTo(1L);
         assertThat(teacher.getFirstName()).isNotNull();
         assertThat(teacher.getLastName()).isNotNull();
+        assertThat(teacher.getCreatedAt()).isNotNull();
+        assertThat(teacher.getUpdatedAt()).isNotNull();
     }
 
     @Test
