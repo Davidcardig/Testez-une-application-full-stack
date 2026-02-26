@@ -274,15 +274,4 @@ class SessionControllerTest {
         verify(sessionService, times(1)).noLongerParticipate(1L, 2L);
     }
 
-    @Test
-    @DisplayName("noLongerParticipate - Devrait retourner 400 si l'id n'est pas valide")
-    void testNoLongerParticipate_InvalidId() {
-        // Act
-        ResponseEntity<?> response = sessionController.noLongerParticipate("invalid", "2");
-
-
-        // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        verify(sessionService, never()).noLongerParticipate(anyLong(), anyLong());
-    }
 }

@@ -59,7 +59,8 @@ class SessionTest {
         assertThat(session.getDate()).isNull();
         assertThat(session.getDescription()).isNull();
         assertThat(session.getTeacher()).isNull();
-        assertThat(session.getUsers()).isNull();
+        assertThat(session.getUsers()).isNotNull();
+        assertThat(session.getUsers()).isEmpty();
     }
 
     @Test

@@ -12,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class Session {
             name = "PARTICIPATE",
             joinColumns = @JoinColumn( name = "session_id" ),
             inverseJoinColumns = @JoinColumn( name = "user_id" ) )
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)
