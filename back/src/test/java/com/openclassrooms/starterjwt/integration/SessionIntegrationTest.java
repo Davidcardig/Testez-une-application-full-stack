@@ -229,6 +229,7 @@ public class SessionIntegrationTest {
                 .description("Test")
                 .date(new Date())
                 .teacher(teacher)
+                .users(new ArrayList<>())
                 .build();
         session = sessionRepository.save(session);
 
@@ -279,6 +280,7 @@ public class SessionIntegrationTest {
                 .description("Test")
                 .date(new Date())
                 .teacher(teacher)
+                .users(new ArrayList<>())
                 .build();
         session = sessionRepository.save(session);
 
@@ -302,6 +304,7 @@ public class SessionIntegrationTest {
                 .description("Test")
                 .date(new Date())
                 .teacher(teacher)
+                .users(new ArrayList<>())
                 .build();
         session = sessionRepository.save(session);
 
@@ -337,6 +340,7 @@ public class SessionIntegrationTest {
                 .description("Test")
                 .date(new Date())
                 .teacher(teacher)
+                .users(new ArrayList<>())
                 .build();
         session = sessionRepository.save(session);
 

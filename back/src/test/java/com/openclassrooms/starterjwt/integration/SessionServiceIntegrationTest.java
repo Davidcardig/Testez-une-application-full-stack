@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -190,6 +191,7 @@ public class SessionServiceIntegrationTest {
                 .description("Test")
                 .date(new Date())
                 .teacher(teacher)
+                .users(new ArrayList<>())
                 .build());
 
         // When - User participates
@@ -210,6 +212,7 @@ public class SessionServiceIntegrationTest {
                 .description("Test")
                 .date(new Date())
                 .teacher(teacher)
+                .users(new ArrayList<>())
                 .build());
         sessionService.participate(created.getId(), user.getId());
 

@@ -124,5 +124,175 @@ public class SignupRequestTest {
         Set<ConstraintViolation<SignupRequest>> violations = validator.validate(signupRequest);
         assertFalse(violations.isEmpty());
     }
+
+    @Test
+    public void testEqualsAndHashCode() {
+        SignupRequest req1 = new SignupRequest();
+        req1.setEmail("test@example.com");
+        req1.setFirstName("John");
+        req1.setLastName("Doe");
+        req1.setPassword("password123");
+
+        SignupRequest req2 = new SignupRequest();
+        req2.setEmail("test@example.com");
+        req2.setFirstName("John");
+        req2.setLastName("Doe");
+        req2.setPassword("password123");
+
+        SignupRequest req3 = new SignupRequest();
+        req3.setEmail("other@example.com");
+        req3.setFirstName("Jane");
+        req3.setLastName("Smith");
+        req3.setPassword("different");
+
+        assertEquals(req1, req2);
+        assertNotEquals(req1, req3);
+        assertEquals(req1.hashCode(), req2.hashCode());
+        assertNotEquals(req1.hashCode(), req3.hashCode());
+    }
+
+    @Test
+    public void testEqualsWithNull() {
+        SignupRequest req = new SignupRequest();
+        req.setEmail("test@example.com");
+        req.setFirstName("John");
+        req.setLastName("Doe");
+        req.setPassword("password123");
+
+        assertNotEquals(req, null);
+        assertEquals(req, req);
+    }
+
+    @Test
+    public void testEqualsWithDifferentType() {
+        SignupRequest req = new SignupRequest();
+        req.setEmail("test@example.com");
+        req.setFirstName("John");
+        req.setLastName("Doe");
+        req.setPassword("password123");
+
+        assertNotEquals(req, new Object());
+    }
+
+    @Test
+    public void testEqualsWithDifferentEmail() {
+        SignupRequest req1 = new SignupRequest();
+        req1.setEmail("test1@example.com");
+        req1.setFirstName("John");
+        req1.setLastName("Doe");
+        req1.setPassword("password123");
+
+        SignupRequest req2 = new SignupRequest();
+        req2.setEmail("test2@example.com");
+        req2.setFirstName("John");
+        req2.setLastName("Doe");
+        req2.setPassword("password123");
+
+        assertNotEquals(req1, req2);
+    }
+
+    @Test
+    public void testEqualsWithDifferentFirstName() {
+        SignupRequest req1 = new SignupRequest();
+        req1.setEmail("test@example.com");
+        req1.setFirstName("John");
+        req1.setLastName("Doe");
+        req1.setPassword("password123");
+
+        SignupRequest req2 = new SignupRequest();
+        req2.setEmail("test@example.com");
+        req2.setFirstName("Jane");
+        req2.setLastName("Doe");
+        req2.setPassword("password123");
+
+        assertNotEquals(req1, req2);
+    }
+
+    @Test
+    public void testEqualsWithDifferentLastName() {
+        SignupRequest req1 = new SignupRequest();
+        req1.setEmail("test@example.com");
+        req1.setFirstName("John");
+        req1.setLastName("Doe");
+        req1.setPassword("password123");
+
+        SignupRequest req2 = new SignupRequest();
+        req2.setEmail("test@example.com");
+        req2.setFirstName("John");
+        req2.setLastName("Smith");
+        req2.setPassword("password123");
+
+        assertNotEquals(req1, req2);
+    }
+
+    @Test
+    public void testEqualsWithDifferentPassword() {
+        SignupRequest req1 = new SignupRequest();
+        req1.setEmail("test@example.com");
+        req1.setFirstName("John");
+        req1.setLastName("Doe");
+        req1.setPassword("password123");
+
+        SignupRequest req2 = new SignupRequest();
+        req2.setEmail("test@example.com");
+        req2.setFirstName("John");
+        req2.setLastName("Doe");
+        req2.setPassword("differentPassword");
+
+        assertNotEquals(req1, req2);
+    }
+
+    @Test
+    public void testToString() {
+        SignupRequest req = new SignupRequest();
+        req.setEmail("test@example.com");
+        req.setFirstName("John");
+        req.setLastName("Doe");
+        req.setPassword("password123");
+
+        String toString = req.toString();
+        assertNotNull(toString);
+        assertTrue(toString.contains("test@example.com"));
+    }
+
+    @Test
+    public void testHashCodeWithNullFields() {
+        SignupRequest req1 = new SignupRequest();
+        SignupRequest req2 = new SignupRequest();
+
+        assertEquals(req1.hashCode(), req2.hashCode());
+        assertEquals(req1, req2);
+    }
+
+    @Test
+    public void testEqualsWithNullEmailInBoth() {
+        SignupRequest req1 = new SignupRequest();
+        req1.setFirstName("John");
+        req1.setLastName("Doe");
+        req1.setPassword("password123");
+
+        SignupRequest req2 = new SignupRequest();
+        req2.setFirstName("John");
+        req2.setLastName("Doe");
+        req2.setPassword("password123");
+
+        assertEquals(req1, req2);
+    }
+
+    @Test
+    public void testEqualsOneNullEmailOneNot() {
+        SignupRequest req1 = new SignupRequest();
+        req1.setFirstName("John");
+        req1.setLastName("Doe");
+        req1.setPassword("password123");
+
+        SignupRequest req2 = new SignupRequest();
+        req2.setEmail("test@example.com");
+        req2.setFirstName("John");
+        req2.setLastName("Doe");
+        req2.setPassword("password123");
+
+        assertNotEquals(req1, req2);
+    }
 }
 
