@@ -12,9 +12,6 @@ describe('SessionService', () => {
     service = TestBed.inject(SessionService);
   });
 
-  it('devrait être créé', () => {
-    expect(service).toBeTruthy();
-  });
 
   describe('Tests unitaires', () => {
     const mockUser: SessionInformation = {

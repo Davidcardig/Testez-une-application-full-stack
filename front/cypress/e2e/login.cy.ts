@@ -81,7 +81,21 @@ describe('Login E2E', () => {
     cy.get('input[formControlName="password"]').should('have.attr', 'type', 'password');
   });
 
+  it('Login - devrait afficher le bouton Register', () => {
+    cy.contains('Register').should('be.visible');
+  });
 
+  it('Login - devrait permettre la navigation complète Login → Register → Login → Sessions', () => {
+    cy.url().should('include', '/login');
+
+    cy.contains('Register').click();
+    cy.url().should('include', '/register');
+
+    cy.contains('Login').click();
+    cy.url().should('include', '/login');
+
+    cy.intercept('POST', '/api/auth/login', {
+      statusCode: 200,
       body: {
         token: 'fake-jwt-token',
         type: 'Bearer',
@@ -91,28 +105,29 @@ describe('Login E2E', () => {
         lastName: 'Admin',
         admin: true
       }
-    }).as('loginRequest');
+    }).as('login');
 
-    cy.intercept('GET', '**/api/session', {
-      statusCode: 200,
-      body: []
-    }).as('sessionsList');
+    cy.intercept('GET', '/api/session', []).as('sessionsList');
 
-    cy.visit('/login');
     cy.get('input[formControlName="email"]').type('yoga@studio.com');
     cy.get('input[formControlName="password"]').type('test!1234');
     cy.get('button[type="submit"]').click();
 
-    cy.wait('@loginRequest');
     cy.url().should('include', '/sessions');
 
-    // Essayer de retourner à la page de login - devrait être redirigé vers /sessions
-    cy.visit('/login', { failOnStatusCode: false });
-    // Note: Le UnauthGuard devrait rediriger, mais sans token persistant le comportement peut varier
-    // Ce test vérifie que l'utilisateur reste connecté pendant la session
+    cy.contains('Sessions').should('be.visible');
+    cy.contains('Account').should('be.visible');
+    cy.contains('Logout').should('be.visible');
   });
 
-  it('Login - devrait afficher le bouton Register', () => {
-    cy.contains('Register').should('be.visible');
+  it('Login - devrait empêcher l\'accès aux pages protégées sans authentification', () => {
+    cy.visit('/sessions');
+    cy.url().should('include', '/login');
+
+    cy.visit('/me');
+    cy.url().should('include', '/login');
+
+    cy.visit('/sessions/create');
+    cy.url().should('include', '/login');
   });
 });

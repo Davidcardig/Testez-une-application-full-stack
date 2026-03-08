@@ -108,3 +108,36 @@ describe('Sessions Form E2E', () => {
     cy.get('mat-option').contains('Paul Martin').should('be.visible');
   });
 
+  describe('Scénario complet: Admin crée une session', () => {
+
+    it('Form - devrait gérer le cycle de vie complet de création d\'une session', () => {
+      cy.intercept('GET', '/api/teacher', [
+        { id: 1, lastName: 'Dupont', firstName: 'Marie', createdAt: '2026-01-01', updatedAt: '2026-01-01' }
+      ]).as('teachersList');
+
+      cy.intercept('POST', '/api/session', {
+        body: {
+          id: 1,
+          name: 'Nouvelle Session',
+          date: '2026-03-10',
+          description: 'Description test',
+          teacher_id: 1,
+          users: []
+        }
+      }).as('createSession');
+
+      cy.contains('button', 'Create').click();
+      cy.url().should('include', '/sessions/create');
+
+      cy.get('input[formControlName="name"]').type('Nouvelle Session');
+      cy.get('input[formControlName="date"]').type('2026-03-10');
+      cy.get('mat-select[formControlName="teacher_id"]').click();
+      cy.get('mat-option').first().click();
+      cy.get('textarea[formControlName="description"]').type('Description test');
+      cy.get('button[type="submit"]').click();
+
+      cy.url().should('include', '/sessions');
+    });
+  });
+
+});

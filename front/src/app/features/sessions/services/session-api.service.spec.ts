@@ -47,9 +47,6 @@ describe('SessionApiService', () => {
     httpMock.verify();
   });
 
-  it('devrait être créé', () => {
-    expect(service).toBeTruthy();
-  });
 
   describe('Tests unitaires', () => {
     describe('all()', () => {
@@ -169,7 +166,6 @@ describe('SessionApiService', () => {
           teacher_id: 1,
           users: []
         };
-
         service.create(newSession).subscribe((session) => {
           expect(session).toBeDefined();
           expect(session.name).toBe('Nouvelle Session');

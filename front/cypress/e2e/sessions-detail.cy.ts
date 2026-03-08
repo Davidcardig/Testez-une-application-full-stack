@@ -178,6 +178,8 @@ describe('Sessions Detail E2E', () => {
       }).as('sessionDetailUpdated');
 
       cy.contains('button', 'Participate').click();
+      cy.wait('@participate');
+      cy.wait('@sessionDetailUpdated');
       cy.contains('3 attendees').should('be.visible');
       cy.contains('button', 'Do not participate').should('be.visible');
     });
@@ -270,3 +272,177 @@ describe('Sessions Detail E2E', () => {
       cy.contains('button', 'Participate').should('be.visible');
     });
   });
+
+  describe('Scénario complet: Utilisateur participe puis se désinscrit', () => {
+
+    it('Detail - devrait permettre de participer puis se désinscrire d\'une session', () => {
+      cy.intercept('POST', '/api/auth/login', {
+        statusCode: 200,
+        body: {
+          token: 'fake-jwt-token',
+          type: 'Bearer',
+          id: 2,
+          username: 'user@test.com',
+          firstName: 'User',
+          lastName: 'Test',
+          admin: false
+        }
+      }).as('login');
+
+      cy.intercept('GET', '/api/session', [
+        {
+          id: 1,
+          name: 'Yoga Session',
+          date: '2026-02-15',
+          description: 'Session de yoga',
+          teacher_id: 1,
+          users: [],
+          createdAt: '2026-01-01',
+          updatedAt: '2026-01-01'
+        }
+      ]).as('sessionsList');
+
+      cy.visit('/login');
+      cy.get('input[formControlName="email"]').type('user@test.com');
+      cy.get('input[formControlName="password"]').type('test!1234');
+      cy.get('button[type="submit"]').click();
+
+      cy.intercept('GET', '/api/session/1', {
+        body: {
+          id: 1,
+          name: 'Yoga Session',
+          date: '2026-02-15',
+          description: 'Session de yoga',
+          teacher_id: 1,
+          users: [],
+          createdAt: '2026-01-01',
+          updatedAt: '2026-01-01'
+        }
+      }).as('sessionDetail');
+
+      cy.intercept('GET', '/api/teacher/1', {
+        body: {
+          id: 1,
+          lastName: 'Dupont',
+          firstName: 'Marie',
+          createdAt: '2026-01-01',
+          updatedAt: '2026-01-01'
+        }
+      }).as('teacherDetail');
+
+      cy.contains('Yoga Session').parent().parent().parent().within(() => {
+        cy.contains('button', 'Detail').click();
+      });
+
+      // Participer
+      cy.intercept('POST', '/api/session/1/participate/2', {
+        statusCode: 200
+      }).as('participate');
+
+      cy.intercept('GET', '/api/session/1', {
+        body: {
+          id: 1,
+          name: 'Yoga Session',
+          date: '2026-02-15',
+          description: 'Session de yoga',
+          teacher_id: 1,
+          users: [2],
+          createdAt: '2026-01-01',
+          updatedAt: '2026-01-01'
+        }
+      }).as('sessionDetailUpdated');
+
+      cy.contains('button', 'Participate').click();
+      cy.contains('1 attendees').should('be.visible');
+      cy.contains('button', 'Do not participate').should('be.visible');
+
+      // Se désinscrire
+      cy.intercept('DELETE', '/api/session/1/participate/2', {
+        statusCode: 200
+      }).as('unParticipate');
+
+      cy.intercept('GET', '/api/session/1', {
+        body: {
+          id: 1,
+          name: 'Yoga Session',
+          date: '2026-02-15',
+          description: 'Session de yoga',
+          teacher_id: 1,
+          users: [],
+          createdAt: '2026-01-01',
+          updatedAt: '2026-01-01'
+        }
+      }).as('sessionDetailReset');
+
+      cy.contains('button', 'Do not participate').click();
+      cy.contains('0 attendees').should('be.visible');
+    });
+  });
+
+  describe('Scénario complet: Admin crée et supprime une session', () => {
+
+    it('Detail - devrait permettre à un admin de supprimer une session créée', () => {
+      cy.intercept('POST', '/api/auth/login', {
+        statusCode: 200,
+        body: {
+          token: 'fake-jwt-token',
+          type: 'Bearer',
+          id: 1,
+          username: 'yoga@studio.com',
+          firstName: 'Admin',
+          lastName: 'Admin',
+          admin: true
+        }
+      }).as('login');
+
+      cy.intercept('GET', '/api/session', [
+        {
+          id: 1,
+          name: 'Test Session',
+          date: '2026-03-10',
+          description: 'Test description',
+          teacher_id: 1,
+          users: []
+        }
+      ]).as('sessionsList');
+
+      cy.intercept('GET', '/api/session/1', {
+        body: {
+          id: 1,
+          name: 'Test Session',
+          date: '2026-03-10',
+          description: 'Test description',
+          teacher_id: 1,
+          users: []
+        }
+      }).as('sessionDetail');
+
+      cy.intercept('GET', '/api/teacher/1', {
+        body: {
+          id: 1,
+          lastName: 'Dupont',
+          firstName: 'Marie',
+          createdAt: '2026-01-01',
+          updatedAt: '2026-01-01'
+        }
+      }).as('teacherDetail');
+
+      cy.intercept('DELETE', '/api/session/1', {
+        statusCode: 200
+      }).as('deleteSession');
+
+      cy.visit('/login');
+      cy.get('input[formControlName="email"]').type('yoga@studio.com');
+      cy.get('input[formControlName="password"]').type('test!1234');
+      cy.get('button[type="submit"]').click();
+
+      cy.contains('Test Session').parent().parent().parent().within(() => {
+        cy.contains('button', 'Detail').click();
+      });
+
+      cy.contains('button', 'Delete').click();
+      cy.url().should('include', '/sessions');
+    });
+  });
+
+});

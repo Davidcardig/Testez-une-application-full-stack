@@ -2,7 +2,6 @@ describe('Me (Account) E2E', () => {
 
   describe('Profil utilisateur - Non admin', () => {
     beforeEach(() => {
-      // Mocks nécessaires
       cy.intercept('GET', '/api/session', []).as('sessionsList');
 
       cy.intercept('POST', '/api/auth/login', {
@@ -29,7 +28,6 @@ describe('Me (Account) E2E', () => {
         }
       }).as('userInfo');
 
-      // Login en tant qu'utilisateur
       cy.visit('/login');
       cy.get('input[formControlName="email"]').type('user@test.com');
       cy.get('input[formControlName="password"]').type('test!1234');
@@ -82,7 +80,6 @@ describe('Me (Account) E2E', () => {
 
   describe('Profil utilisateur - Admin', () => {
     beforeEach(() => {
-      // Mocks nécessaires
       cy.intercept('GET', '/api/session', []).as('sessionsList');
 
       cy.intercept('POST', '/api/auth/login', {
@@ -109,7 +106,6 @@ describe('Me (Account) E2E', () => {
         }
       }).as('userInfo');
 
-      // Login en tant qu'admin
       cy.visit('/login');
       cy.get('input[formControlName="email"]').type('yoga@studio.com');
       cy.get('input[formControlName="password"]').type('test!1234');
@@ -159,7 +155,6 @@ describe('Me (Account) E2E', () => {
         }
       }).as('userInfo');
 
-      // Login
       cy.visit('/login');
       cy.get('input[formControlName="email"]').type('user@test.com');
       cy.get('input[formControlName="password"]').type('test!1234');
@@ -172,7 +167,57 @@ describe('Me (Account) E2E', () => {
       cy.get('button[mat-icon-button]').click();
       cy.url().should('include', '/sessions');
 
-      // Test de déconnexion depuis n'importe quelle page
       cy.contains('Logout').click();
       cy.url().should('eq', 'http://localhost:4200/');
+    });
+  });
+
+  describe('Scénario complet profil utilisateur', () => {
+    beforeEach(() => {
+      cy.intercept('GET', '/api/session', []).as('sessionsList');
+
+      cy.intercept('POST', '/api/auth/login', {
+        statusCode: 200,
+        body: {
+          token: 'fake-jwt-token',
+          type: 'Bearer',
+          id: 2,
+          username: 'user@test.com',
+          firstName: 'User',
+          lastName: 'Test',
+          admin: false
+        }
+      }).as('login');
+
+      cy.intercept('GET', '/api/user/2', {
+        body: {
+          id: 2,
+          email: 'user@test.com',
+          lastName: 'Test',
+          firstName: 'User',
+          admin: false,
+          createdAt: '2026-01-01',
+          updatedAt: '2026-01-15'
+        }
+      }).as('userInfo');
+
+      cy.visit('/login');
+      cy.get('input[formControlName="email"]').type('user@test.com');
+      cy.get('input[formControlName="password"]').type('test!1234');
+      cy.get('button[type="submit"]').click();
+      cy.url().should('include', '/sessions');
+    });
+
+    it('Me - devrait gérer le profil utilisateur complet (Account → retour → Logout)', () => {
+      cy.contains('Account').click();
+      cy.url().should('include', '/me');
+      cy.contains('User information').should('be.visible');
+
+      cy.get('button[mat-icon-button]').click();
+      cy.url().should('include', '/sessions');
+
+      cy.contains('Logout').click();
+      cy.url().should('eq', 'http://localhost:4200/');
+    });
+  });
 });
